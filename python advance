@@ -1,0 +1,432 @@
+1. Create a class Sudoku that takes a string as an argument. The string will contain the numbers of a regular 9x9 sudoku board left to right and top to bottom, with zeros filling up the empty cells.
+Attributes:
+
+An instance of the class Sudoku will have one attribute:
+
+board: a list representing the board, with sublits for each row, with the numbers as integers. Empty cell represented with 0.
+Methods:
+
+An instance of the class Sudoku wil have three methods:
+
+get_row(n): will return the row in position n.
+get_col(n): will return the column in position n.
+get_sqr([n, m]): will return the square in position n if only one argument is given, and the square to which the cell in position (n, m) belongs to if two arguments are given.
+Example:
+
+image.png
+
+game = Sudoku("417950030000000700060007000050009106800600000000003400900005000000430000200701580")
+
+game.board ➞ [
+[4, 1, 7, 9, 5, 0, 0, 3, 0],
+  [0, 0, 0, 0, 0, 0, 7, 0, 0],
+  [0, 6, 0, 0, 0, 7, 0, 0, 0],
+  [0, 5, 0, 0, 0, 9, 1, 0, 6],
+  [8, 0, 0, 6, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 3, 4, 0, 0],
+  [9, 0, 0, 0, 0, 5, 0, 0, 0],
+  [0, 0, 0, 4, 3, 0, 0, 0, 0],
+  [2, 0, 0, 7, 0, 1, 5, 8, 0]
+]
+
+game.get_row(0) ➞ [4, 1, 7, 9, 5, 0, 0, 3, 0]
+game.get_col(8) ➞ [0, 0, 0, 6, 0, 0, 0, 0, 0]
+game.get_sqr(1) ➞ [9, 5, 0, 0, 0, 0, 0, 0, 7]
+game.get_sqr(1, 8) ➞ [0, 3, 0, 7, 0, 0, 0, 0, 0]
+game.get_sqr(8, 3) ➞ [0, 0, 5, 4, 3, 0, 7, 0, 1]
+
+class Sudoku:
+    def __init__(self,in_string):
+        self.board = []
+        for ele in range(0,len(in_string),9):
+            self.board.append([int(string) for string in in_string[ele:ele+9]])
+            
+    def get_row(self,row):
+        return self.board[row]
+    
+    def get_col(self,column):
+        output = []
+        for ele in self.board:
+            output.append(ele[column])
+        return output
+    
+    def get_sqr(self,row,column=None):
+        output = []
+        square_to_cell = {
+            0 : [[0,1,2],[0,1,2]],
+            1 : [[0,1,2],[3,4,5]],
+            2 : [[0,1,2],[6,7,8]],
+            3 : [[3,4,5],[0,1,2]],
+            4 : [[3,4,5],[3,4,5]],
+            5 : [[3,4,5],[6,7,8]],
+            6 : [[6,7,8],[0,1,2]],
+            7 : [[6,7,8],[3,4,5]],
+            8 : [[6,7,8],[6,7,8]]
+        }
+        
+        if column == None:
+            for i in square_to_cell[row][0]:
+                for j in square_to_cell[row][1]:
+                    output.append(self.board[i][j])
+        else:
+            square = None
+            if row <= 2:
+                square = 0 if column <=2 else 1 if column <=5 else 2
+            elif row <= 5:
+                square = 3 if column <=2 else 4 if column <=5 else 5
+            else:
+                square = 6 if column <=2 else 7 if column <=5 else 8
+            for i in square_to_cell[square][0]:
+                for j in square_to_cell[square][1]:
+                    output.append(self.board[i][j])
+        return (output)
+                            
+game = Sudoku("417950030000000700060007000050009106800600000000003400900005000000430000200701580")
+display(game.board)
+print(f'game.get_row(0) ➞ {game.get_row(0)}')
+print(f'game.get_col(8) ➞ {game.get_col(8)}')
+print(f'game.get_sqr(1) ➞ {game.get_sqr(1)}')
+print(f'game.get_sqr(1,8) ➞ {game.get_sqr(1,8)}')
+print(f'game.get_sqr(8,3) ➞ {game.get_sqr(8,3)}')
+2. The function input is two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list, in which the digits are also stored in reversed order. The class ListNode, building block of the linked list, is defined in the Tests tab.
+Class definition
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+Example:
+lt1 = ListNode(2)
+lt1.add_data([4, 3])
+lt2 = ListNode(5)
+lt2.add_data([6, 4])
+# print(lt1.get_data())    # [2, 4, 3]
+# print(lt2.get_data())    # [5, 6, 4]
+# print(342 + 465)         # 807
+add_two_numbers(lt1, lt2).get_data() ➞ [7, 0, 8]
+
+lt1 = ListNode(0)
+lt2 = ListNode(0)
+# print(lt1.get_data())    # [0]
+# print(lt2.get_data())    # [0]
+# print(0 + 0)             # 0
+add_two_numbers(lt1, lt2).get_data() ➞ [0]
+lt1 = ListNode(9)
+lt1.add_data([9,9,9,9,9,9])
+lt2 = ListNode(9)
+lt2.add_data([9,9,9])
+# print(lt1.get_data())    # [9, 9, 9, 9, 9, 9, 9]
+# print(lt2.get_data())    # [9, 9, 9, 9]
+# print(9999999 + 9999)    # 10009998
+add_two_numbers(lt1, lt2).get_data() ➞ [8, 9, 9, 9, 0, 0, 0, 1]
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+        self.num_list = []
+        self.num_list.append(val)       
+    def add_data(self,in_list):
+        self.num_list.extend(in_list)
+    def get_data(self):
+        return self.num_list
+    
+class add_two_numbers:
+    def __init__(self,ob1,ob2):
+        self.ob1 = ob1
+        self.ob2 = ob2  
+    def get_data(self):
+        it1 = ''.join([str(ele) for ele in self.ob1.get_data()[::-1]])
+        it2 = ''.join([str(ele) for ele in self.ob2.get_data()[::-1]])
+        return [int(x) for x in str(int(it1)+int(it2))[::-1]]   
+    lt1 = ListNode(2)
+lt1.add_data([4, 3])
+
+lt2 = ListNode(5)
+lt2.add_data([6, 4])
+
+print(f'lt1.get_data() ➞ {lt1.get_data()}') 
+print(f'lt2.get_data() ➞ {lt2.get_data()}') 
+print(f'add_two_numbers(lt1, lt2).get_data() ➞ {add_two_numbers(lt1, lt2).get_data()}',end='\n\n')
+
+lt1 = ListNode(0)
+lt2 = ListNode(0)
+
+print(f'lt1.get_data() ➞ {lt1.get_data()}') 
+print(f'lt2.get_data() ➞ {lt2.get_data()}') 
+print(f'add_two_numbers(lt1, lt2).get_data() ➞ {add_two_numbers(lt1, lt2).get_data()}',end='\n\n')
+
+lt1 = ListNode(9)
+lt1.add_data([9,9,9,9,9,9])
+
+lt2 = ListNode(9)
+lt2.add_data([9,9,9])
+
+print(f'lt1.get_data() ➞ {lt1.get_data()}') 
+print(f'lt2.get_data() ➞ {lt2.get_data()}') 
+print(f'add_two_numbers(lt1, lt2).get_data() ➞ {add_two_numbers(lt1, lt2).get_data()}')
+3. Write a class called CoffeeShop, which has three instance variables:
+name : a string (basically, of the shop)
+menu : a list of items (of dict type), with each item containing the item (name of the item), type (whether a food or a drink) and price.
+orders : an empty list
+and seven methods:
+
+add_order: adds the name of the item to the end of the orders list if it exists on the menu, otherwise, return "This item is currently unavailable!"
+fulfill_order: if the orders list is not empty, return "The {item} is ready!". If the orders list is empty, return "All orders have been fulfilled!"
+list_orders: returns the item names of the orders taken, otherwise, an empty list.
+due_amount: returns the total amount due for the orders taken.
+cheapest_item: returns the name of the cheapest item on the menu.
+drinks_only: returns only the item names of type drink from the menu.
+food_only: returns only the item names of type food from the menu.
+IMPORTANT: Orders are fulfilled in a FIFO (first-in, first-out) order.
+
+Example:
+
+tcs.add_order("hot cocoa") ➞ "This item is currently unavailable!"
+# Tesha's coffee shop does not sell hot cocoa
+tcs.add_order("iced tea") ➞ "This item is currently unavailable!"
+# specifying the variant of "iced tea" will help the process
+
+tcs.add_order("cinnamon roll") ➞  "Order added!"
+tcs.add_order("iced coffee") ➞ "Order added!"
+tcs.list_orders ➞ ["cinnamon roll", "iced coffee"]
+# all items of the current order
+
+tcs.due_amount() ➞ 2.17
+
+tcs.fulfill_order() ➞ "The cinnamon roll is ready!"
+tcs.fulfill_order() ➞ "The iced coffee is ready!"
+tcs.fulfill_order() ➞ "All orders have been fulfilled!"
+# all orders have been presumably served
+
+tcs.list_orders() ➞ []
+# an empty list is returned if all orders have been exhausted
+
+tcs.due_amount() ➞ 0.0
+# no new orders taken, expect a zero payable
+
+tcs.cheapest_item() ➞ "lemonade"
+tcs.drinks_only() ➞ ["orange juice", "lemonade", "cranberry juice", "pineapple juice", "lemon iced tea", "vanilla chai latte", "hot chocolate", "iced coffee"]
+tcs.food_only() ➞ ["tuna sandwich", "ham and cheese sandwich", "bacon and egg", "steak", "hamburger", "cinnamon roll"]
+
+Menu = [
+    {'name':'Orange Juice','type':'drink','price':25.50},
+    {'name':'Lemonade','type':'drink','price':10},
+    {'name':'Cranberry Juice','type':'drink','price':40},
+    {'name':'Pineapple Juice','type':'drink','price':40},
+    {'name':'Lemon Iced Tea','type':'drink','price':80},
+    {'name':'Vanilla Chai Latte','type':'drink','price':90},
+    {'name':'Hot Choclate','type':'drink','price':100},
+    {'name':'Iced Cofee','type':'drink','price':70.12},
+    {'name':'Tuna Sandwich','type':'food','price':120},
+    {'name':'Ham Cheese Sandwich','type':'food','price':180},
+    {'name':'Bacon And Egg','type':'food','price': 120},
+    {'name':'Chicken Biryani','type':'food','price':360},
+    {'name':'Veg Burger','type':'food','price':90},
+    {'name':'Cinnamon Roll','type':'food','price':60.25}
+]
+
+class Cofeeshop:
+    def __init__(self,name,menu,orders):
+        self.name = name
+        self.menu = menu
+        self.orders = orders
+    
+    def add_order(self, order_name):
+        available_items = [item['name'].lower() for item in self.menu]
+        if order_name in available_items:
+            output = "Order added!"
+            self.orders.append(order_name)
+        else:
+            output = "This item is currently unavailable!"
+        return output
+         def list_orders(self):
+        return self.orders
+    
+    def due_amount(self):
+        output = sum([item['price'] for item in self.menu if item['name'].lower() in self.orders])
+        return output
+    
+    def fulfill_order(self):
+        if len(self.orders) > 0:
+            output = f'The {self.orders.pop(0)} is ready!'
+        else:
+            output = 'All orders have been fulfilled!'
+        return output
+        
+    def cheapest_item(self):
+        lowest_price = min([item['price'] for item in self.menu])
+        output = [item['name'] for item in self.menu if item['price'] == lowest_price]
+        return output[0]
+        
+    def drinks_only(self):
+        output = [item['name'] for item in self.menu if item['type'] == 'drink']
+        return output
+    
+    def food_only(self):
+        output = [item['name'] for item in self.menu if item['type'] == 'food']
+        return output
+    
+tcs = Cofeeshop('Tesha\'s Cofee Shop',Menu,[])
+print(f'tcs.add_order("hot cocoa") ➞ {tcs.add_order("hot cocoa")}')
+print(f'tcs.add_order("iced tea") ➞ {tcs.add_order("iced tea")}')
+print(f'tcs.add_order("cinnamon roll") ➞ {tcs.add_order("cinnamon roll")}')
+print(f'tcs.add_order("iced cofee") ➞ {tcs.add_order("iced cofee")}')
+print(f'tcs.list_orders() ➞ {tcs.list_orders()}')
+print(f'tcs.due_amount() ➞ {tcs.due_amount()}')
+print(f'tcs.fulfill_order() ➞ {tcs.fulfill_order()}')
+print(f'tcs.fulfill_order() ➞ {tcs.fulfill_order()}')
+print(f'tcs.fulfill_order() ➞ {tcs.fulfill_order()}')
+print(f'tcs.list_orders() ➞ {tcs.list_orders()}')
+print(f'tcs.due_amount() ➞ {tcs.due_amount()}')
+print(f'tcs.cheapest_item() ➞ {tcs.cheapest_item()}')
+print(f'tcs.food_only() ➞ {tcs.food_only()}')
+print(f'tcs.drinks_only() ➞ {tcs.drinks_only()}')
+4. In this challenge, write a funcion loneliest_number to find the last Lonely number inside a sequence. A number is Lonely if the distance from its closest Prime sets a new record of the sequence.
+Sequence = from 0 to 3
+# Any number lower than 3 doesn't have a Prime preceeding it...
+# ...so that you'll consider only its next closest Prime.
+
+0 has distance 2 from its closest Prime (2)
+# It's a new record! 0 It's the first lonely number of the sequence
+
+1 has distance 1 from its closest Prime (2)
+2 has distance 1 from 3
+3 has distance 1 from 2
+# The sequence 0 to 3  has only one Lonely number: 0
+
+Sequence = Numbers from 5 to 10
+5 has distance 2 from its closest Prime (3 or 7)
+# It's a new record! 5 It's the first lonely number of the sequence
+
+6 has distance 1 from 5 or 7
+7 has distance 2 from 5
+8 has distance 1 from 7
+9 has distance 2 from 7 or 11
+10 has distance 1 from 11
+
+# The sequence 5 to 10  has only one Lonely number: 5
+Sequence = Numbers from 19 to 24
+
+19 has distance 2 from its closest Prime (17)
+# It's a new record! 19 It's the first lonely number of the sequence
+
+20 has distance 1 from 19
+21 has distance 2 from 5
+22 has distance 1 from 23
+23 has distance 4 from 17 or 29
+
+# It's a new record! 23 is the second lonely number of the sequence
+24 has distance 1 from 23
+# The sequence 19 to 24  has two Lonely numbers: 19 and 23
+The function loneliest_number must accept two integers lo and hi being the inclusive bounds of the sequence to analyze, and returns a dictionay (dict) object with the following keys and values:
+
+number: is the last Lonely number found in the given sequence;
+distance: is the distance of the number from its closest Prime;
+closest: is the Prime closest to number (if two Primes are equally distant from number, return the higher Prime).
+Example:
+loneliest_number(0, 22) ➞ {
+  number: 0, distance: 2, closest: 2
+}
+
+loneliest_number(8, 123) ➞ {
+  number: 53, distance: 6, closest: 59
+}
+
+loneliest_number(938, 1190) ➞ {
+  number: 1140, distance: 11, closest: 1151
+}
+
+loneliest_number(120, 1190) ➞ {
+  number: 211, distance: 12, closest: 223
+}
+
+def loneliest_number(start,end):
+    prime_list = []
+    output = {'number': 0, 'distance': 0, 'closest': 0}
+    temp = []
+    if start <=3: prime_list.extend([2,3])
+    for ele in range(start,end+1):
+        if (ele-1)%6 == 0 or (ele+1)%6 == 0: prime_list.append(ele) # initial check
+    for ele in prime_list:
+        for item in range(2,ele):
+            if ele%item == 0 :
+            temp.append(ele)
+                break    
+    prime_list = sorted(set(prime_list)-set(temp))
+    if start in [4,5] : print(3) ; prime_list.insert(0,3) # Logic to get first prime number before start
+    else:
+        for ele in range(start-1,0,-1):
+            if (ele-1)%6 == 0 or (ele+1)%6 == 0:
+                prime_list.insert(0,ele)
+                break
+    while True: # Logic to get first prime number after end
+        if (end-1)%6 == 0 or (end+1)%6 == 0:
+            out_num = None
+            for ele in range(2,end):
+                if end%ele == 0:
+                    out_num = ele
+                    break
+            if out_num == None:prime_list.append(end) ; break
+            else: end +=1
+        else:
+            end+=1          
+    if 1 in prime_list: prime_list.remove(1)                 
+    for ele in range(start,end):
+        org_ele = ele
+        while True:
+            if ele in prime_list:
+                n_f_prime = ele if ele != org_ele else prime_list[prime_list.index(ele)+1]
+                n_b_prime = prime_list[prime_list.index(ele)-1] if prime_list.index(ele) > 0 else 0
+                closest_distance = min(org_ele-n_b_prime,n_f_prime-org_ele) if n_b_prime !=0 else n_f_prime-org_ele 
+                closest_prime = n_f_prime if n_b_prime == 0 or closest_distance == n_f_prime-org_ele else n_b_prime
+                if output['distance'] < closest_distance:
+                    output = {'number': org_ele, 'distance': closest_distance, 'closest': closest_prime}
+                break
+                else:
+                ele +=1
+    print(f'loneliest_number{start,end} ➞ {output}')
+               
+loneliest_number(0,22)
+loneliest_number(8, 123)
+loneliest_number(938, 1190) 
+loneliest_number(120, 1190)
+5. Implement a class Selfie that can store the current state of the object in the form of binary string. It can take multiple pictures and then recover to a state it was before. During testing an object will be provided with new attributes and their values. It will store its state. Then the values will be changed. Then it will be given new attributes. It will store its state again. It will be repeated few times.
+Later the states of the object will be recovered given an index. The return value should be a new Selfie with the requested historic state and the state history of the new object should be updated with a copy of current object's state history.
+
+The object also knows how many states it has stored. If the index is not within the range of stored states, the object stays as is. If the argument is invalid, n < 0 or n >= self.n_states(), the current object (or a copy thereof) should be returned.
+
+Example:
+p = Selfie()
+p.x = 2
+p.save_state()
+p.x = 5
+p = p.recover_state(0)
+p.x ➞ 2
+
+class Selfie:
+    def __init__(self,x=None):
+        self.x = x
+        self.archived_states = []
+    def save_state(self):
+        self.archived_states.append(self.x)
+        self.x = None
+        return self.archived_states
+    def recover_state(self,in_num):
+        if in_num >=0 and in_num <= len(self.archived_states):
+            self.x = self.archived_states[in_num]
+        return self
+        
+p = Selfie()
+p.x = 2
+print(f'p.__dict__  ➞ {p.__dict__}')
+p.save_state()
+print(f'p.__dict__  ➞ {p.__dict__}')
+p.x = 5
+print(f'p.__dict__  ➞ {p.__dict__}')
+p.save_state()
+print(f'p.__dict__  ➞ {p.__dict__}')
+p = p.recover_state(0)
+print(f'p.__dict__  ➞ {p.__dict__}')
+print(f'p.x ➞ {p.x}')
